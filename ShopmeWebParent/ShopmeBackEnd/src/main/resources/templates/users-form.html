@@ -73,7 +73,7 @@
 				<div class="row justify-content-center align-items-center" style="width: 100%;">
 					<div class="col-md-7">
 						<form th:action="@{/users/save}" method="post" style="max-width: 800px; margin: 0 auto;"
-							th:object="${user}">
+							th:object="${user}" onsubmit="return checkEmailUnique(this);"
 							<div class="border border-secondary rounded p-3">
 								<div class="form-group row">
 									<label for="Email" class="col-sm-4 col-form-label">Email
@@ -123,6 +123,7 @@
 								</div>
 								<div class="text-center">
 									<button type="submit" class="btn btn-primary">Submit</button>
+									<button type="button" class="btn btn-secondary"  id="buttonCancel">Cancel</button>
 								</div>
 							</div>
 
@@ -135,6 +136,58 @@
 			</div>
 		</div>
 	</div>
+	
+	
+	<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#buttonCancel").on("click", function(){
+            window.location = "[[@{/users}]]";
+        });
+    });
 
+    function checkEmailUnique(form){
+		url = "[[@{/users/check_email}]]";
+		userEmail = $("#email").val();
+		csrf = $("input[name='_csrf']").val();
+		params = {email:userEmail, _csrf:csrf};
+		
+		
+		$.post(url,params,function(response){
+			if(response  ==  "OK"){
+				form.submit();
+			}else if(response == "DUPLICATED"){
+				showDialogMessage("Warning","There is another user having the email +" + response)
+				
+			}else{
+				showDialogMessage("Error","Unknown response from server");
+			}
+		}).fail(function(){
+			showDialogMessage("Error","Could not connect to the server");
+		})
+        return false;
+    }
+    function showDialogMessage(title,message){
+		$("#staticBackdropLabel").text(title);
+		$("#modal-body").text(message);
+		$('#staticBackdrop').modal('show');
+	}
+</script>
 </html>

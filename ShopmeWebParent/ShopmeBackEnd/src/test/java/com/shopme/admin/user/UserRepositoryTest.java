@@ -42,4 +42,11 @@ public class UserRepositoryTest {
 		
 		assertThat(saveUsers.getId()).isGreaterThan(0);;
 	}
+	
+	@Test
+	public boolean testCheckUniqueEmail(String email) {
+		Users saveUsers = usersRepository.findByEmail(email);
+		return saveUsers == null;
+		
+	}
 }

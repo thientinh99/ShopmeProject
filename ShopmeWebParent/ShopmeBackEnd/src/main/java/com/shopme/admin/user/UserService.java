@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.shopme.common.entity.Role;
@@ -21,6 +22,9 @@ public class UserService {
 
 	@Autowired
 	private RoleRepository roleRepo;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public List<Users> listAllUser() {
 		return (List<Users>) uRepo.findAll();
@@ -36,6 +40,12 @@ public class UserService {
 	}
 	
 	public Users saveUser(Users users) {
+		passEncode(users);
 		return uRepo.save(users);
+	}
+	
+	private void passEncode(Users users) {
+		String encodePassword = passwordEncoder.encode(users.getPassword());
+		users.setPassword(encodePassword);
 	}
 }

@@ -11,65 +11,44 @@
 </head>
 
 <body>
-	<div class="container-fluid">
+	<div class="container-fluid text-center">
 
-		<nav class="navbar navbar-expand-lg navbar-light bg-dark">
-			<div class="container-fluid">
-				<a class="navbar-brand" th:href="@{/}">
-					<img th:src="@{images/ShopmeAdminSmall.png}" class="d-inline-block align-text-top">
-				</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-					aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="collapse navbar-collapse" id="navbarNav">
-					<ul class="navbar-nav">
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/users}">Users</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/categories}">Categories</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/brands}">Brands</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/poducts}">Products</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/customers}">Customers</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/shippings}">Shippings</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/orders}">Orders</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/report}">Sales Report</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/articles}">Articles</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/menu}">Menu</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/settings}">Settings</a>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</nav>
-
-	</div>
-	<div class="container-fluid">
 		<div>
-			<h1>Welcome Admin Shopme Control Panel</h1>
-			<div>
-				<p>Shopme control Panel - Copyright &copy; Shopme</p>
-			</div>
+			<img th:src="@{images/ShopmeAdminSmall.png}" class="d-inline-block align-text-top">
 		</div>
+
+		<form th:action="@{/login}" method="post"
+			style="max-width: 350px; margin: 0 auto">
+			<div th:if="${param.error}">
+				<p class="text-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
+			</div>
+			<div th:if="${param.logout}">
+				<p class="text-warning">You have been logged out.</p>
+			</div>
+
+			<div class="border border-secondary rounded p-3">
+				<p>Access to Shopme Control Panel</p>
+				<p>
+					<input type="email" name="email" class="form-control"
+						placeholder="E-mail" required />
+				</p>
+				<p>
+					<input type="password" name="password" class="form-control"
+						placeholder="Password" required />
+				</p>
+				<p>
+					<input type="checkbox" name="remember-me" />&nbsp;Remember Me
+				</p>
+				<p>
+					<input type="submit" value="Login" class="btn btn-primary" />
+				</p>
+			</div>
+		</form>
+
+		<div>
+			<p>Shopme Control Panel - Copyright &copy; Shopme</p>
+		</div>
+
 	</div>
 </body>
 
