@@ -6,6 +6,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 	<title>Users - Manage</title>
 	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{webjars/font-awesome/6.5.2/css/all.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/style.css}">
 	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 	<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
 </head>
@@ -78,10 +80,11 @@
 						<tr>
 							<th>User ID</th>
 							<th>Photos</th>
+							<th>Email</th>
 							<th>First Name</th>
 							<th>Last Name</th>
+							<th>Role</th>
 							<th>Enable</th>
-							<th></th>
 							<th></th>
 						</tr>
 					</thead>
@@ -95,7 +98,16 @@
 							<td>
 								[[${user.roles}]]
 							</td>
-							<td>Edit || Delete</td>
+							<td>
+								<a th:if="${user.enabled == true}" class="fa fa-check-circle fa-2x icon-green"
+									aria-hidden="true"></a>
+								<a th:if="${user.enabled == false}" class="fa fa-times-circle fa-2x icon-dark"
+									aria-hidden="true"></a>
+							</td>
+							<td><a class="fa fa-pencil fa-2x icon-green" aria-hidden="true"></a>
+								&nbsp;
+								<a class="fa fa-trash fa-2x icon-dark" aria-hidden="true"></a>
+							</td>
 						</tr>
 					</tbody>
 				</table>
