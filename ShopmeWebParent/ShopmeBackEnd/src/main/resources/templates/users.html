@@ -100,13 +100,13 @@
 							</td>
 							<td>
 								<a th:if="${user.enabled == true}" class="fa fa-check-circle fa-2x icon-green"
-									aria-hidden="true"></a>
+									aria-hidden="true" th:href="@{'/users/'+${user.id}+'/updateStatusEnable/false'}"></a>
 								<a th:if="${user.enabled == false}" class="fa fa-times-circle fa-2x icon-dark"
-									aria-hidden="true"></a>
+									aria-hidden="true" th:href="@{'/users/'+${user.id}+'/updateStatusEnable/true'}"></a>
 							</td>
-							<td><a class="fa fa-pencil fa-2x icon-green" aria-hidden="true"></a>
+							<td><a class="fa fa-pencil fa-2x icon-green" aria-hidden="true" th:href="@{'/users/edit/' +${user.id}}"></a>
 								&nbsp;
-								<a class="fa fa-trash fa-2x icon-dark" aria-hidden="true"></a>
+								<a class="fa fa-trash fa-2x icon-dark link-delete" aria-hidden="true" th:href="@{'/users/delete/' +${user.id}}" th:userId = "${user.id}"></a>
 							</td>
 						</tr>
 					</tbody>
@@ -117,6 +117,41 @@
 			</div>
 		</div>
 	</div>
+	<!-- Modal -->
+	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+		aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="staticBackdropLabel"></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body" id="modal-body">
+
+				</div>
+				<div class="modal-footer">
+					<a type="button" class="btn btn-success" href=""  id="yesBtn">Yes</a>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		$(document).ready(function(){
+			$(".link-delete").on("click",function(e){
+				e.preventDefault();
+				var link = $(this);
+				userId = link.attr("userId")
+				showDialogMessage("Delete Confirmation","Are you sure want to delete this user ID : "+userId)
+				$("#yesBtn").attr("href", link.attr("href"))
+			});
+		});
+		function showDialogMessage(title, message) {
+		$("#staticBackdropLabel").text(title);
+		$("#modal-body").text(message);
+		$('#staticBackdrop').modal('show');
+	}
+	</script>
 </body>
 
 </html>
