@@ -91,7 +91,11 @@
 					<tbody>
 						<tr th:each="user : ${lstUsers} ">
 							<td>[[${user.id}]]</td>
-							<td>[[${user.photos}]]</td>
+							<td>
+								<span th:if="${user.photos == null}" class="fas fa-portrait fa-3x icon-silver"></span>
+								<img th:if="${user.photos != null}" id="thumbnail" th:src="@{${user.photoImagePath}}"
+									style="width: 30%;" />
+							</td>
 							<td>[[${user.email}]]</td>
 							<td>[[${user.firstName}]]</td>
 							<td>[[${user.lastName}]]</td>
@@ -100,17 +104,48 @@
 							</td>
 							<td>
 								<a th:if="${user.enabled == true}" class="fa fa-check-circle fa-2x icon-green"
-									aria-hidden="true" th:href="@{'/users/'+${user.id}+'/updateStatusEnable/false'}"></a>
+									aria-hidden="true"
+									th:href="@{'/users/'+${user.id}+'/updateStatusEnable/false'}"></a>
 								<a th:if="${user.enabled == false}" class="fa fa-times-circle fa-2x icon-dark"
 									aria-hidden="true" th:href="@{'/users/'+${user.id}+'/updateStatusEnable/true'}"></a>
 							</td>
-							<td><a class="fa fa-pencil fa-2x icon-green" aria-hidden="true" th:href="@{'/users/edit/' +${user.id}}"></a>
+							<td><a class="fa fa-pencil fa-2x icon-green" aria-hidden="true"
+									th:href="@{'/users/edit/' +${user.id}}"></a>
 								&nbsp;
-								<a class="fa fa-trash fa-2x icon-dark link-delete" aria-hidden="true" th:href="@{'/users/delete/' +${user.id}}" th:userId = "${user.id}"></a>
+								<a class="fa fa-trash fa-2x icon-dark link-delete" aria-hidden="true"
+									th:href="@{'/users/delete/' +${user.id}}" th:userId="${user.id}"></a>
 							</td>
 						</tr>
 					</tbody>
 				</table>
+			</div>
+			<nav aria-label="Page navigation example">
+				<ul class="pagination justify-content-center">
+					<li class="" th:classappend="${currentPage == 1} ?  'page-item disabled' : 'page-item'">
+						<a class="page-link" tabindex="-1" aria-disabled="true" th:href="@{/users/pages/1}">First</a>
+					</li>
+					<li class="page-item " th:classappend="${currentPage == 1} ?  'page-item disabled' : 'page-item'">
+						<a class="page-link" tabindex="-1" aria-disabled="true"
+							th:href="@{'/users/pages/'  + ${currentPage - 1}}">Previous</a>
+					</li>
+					<li th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
+						th:each="i : ${#numbers.sequence(1,totalPages)}">
+						<a class="page-link" th:href="@{'/users/pages/' + ${i}}">[[${i}]]</a>
+					</li>
+					<li th:class="${currentPage >= totalPages ? 'page-item disabled' : 'page-item'}">
+						<a class="page-link" th:href="@{'/users/pages/'  + ${currentPage + 1}}">Next</a>
+					</li>
+					<li th:class="${currentPage >= totalPages ? 'page-item disabled' : 'page-item'}">
+						<a class="page-link" tabindex="-1" aria-disabled="true"
+							th:href="@{'/users/pages/'  + ${totalPages}}">Last</a>
+					</li>
+				</ul>
+			</nav>
+			<div class="text-center m-1" th:if="${totalItems > 0}">
+				<span>Showing users [[${startCount}]] to [[${endCount}]] of [[${totalItems}]]</span>
+			</div>
+			<div class="text-center m-1" th:unless="${totalItems > 0}">
+				<span>No users found</span>
 			</div>
 			<div>
 				<p>Shopme control Panel - Copyright &copy; Shopme</p>
@@ -130,27 +165,27 @@
 
 				</div>
 				<div class="modal-footer">
-					<a type="button" class="btn btn-success" href=""  id="yesBtn">Yes</a>
+					<a type="button" class="btn btn-success" href="" id="yesBtn">Yes</a>
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 				</div>
 			</div>
 		</div>
 	</div>
 	<script>
-		$(document).ready(function(){
-			$(".link-delete").on("click",function(e){
+		$(document).ready(function () {
+			$(".link-delete").on("click", function (e) {
 				e.preventDefault();
 				var link = $(this);
 				userId = link.attr("userId")
-				showDialogMessage("Delete Confirmation","Are you sure want to delete this user ID : "+userId)
+				showDialogMessage("Delete Confirmation", "Are you sure want to delete this user ID : " + userId)
 				$("#yesBtn").attr("href", link.attr("href"))
 			});
 		});
 		function showDialogMessage(title, message) {
-		$("#staticBackdropLabel").text(title);
-		$("#modal-body").text(message);
-		$('#staticBackdrop').modal('show');
-	}
+			$("#staticBackdropLabel").text(title);
+			$("#modal-body").text(message);
+			$('#staticBackdrop').modal('show');
+		}
 	</script>
 </body>
 

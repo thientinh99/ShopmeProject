@@ -2,11 +2,11 @@ package com.shopme.admin.user;
 
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,16 +14,13 @@ import com.shopme.common.constans.MessageContants;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.Users;
 import com.shopme.common.exception.UserNotFoundException;
-import com.shopme.common.exception.UserValidationException;
 
 import jakarta.transaction.Transactional;
-
-import java.util.regex.Pattern;
 
 @Service
 @Transactional
 public class UserService {
-	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+	public static final int USERS_PER_PAGE = 5;
 	MessageContants msg = new MessageContants();
 	@Autowired
 	private UsersRepository uRepo;
@@ -36,6 +33,11 @@ public class UserService {
 
 	public List<Users> listAllUser() {
 		return (List<Users>) uRepo.findAll();
+	}
+
+	public Page<Users> listByPage(int numPage) {
+		Pageable pageable = PageRequest.of(numPage - 1, USERS_PER_PAGE);
+		return  uRepo.findAll(pageable);
 	}
 
 	public List<Role> listAllRole() {

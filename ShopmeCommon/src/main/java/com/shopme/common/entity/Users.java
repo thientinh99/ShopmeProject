@@ -41,7 +41,7 @@ public class Users {
 	private String photos;
 
 	private boolean enabled;
-    
+
 	@ManyToAny
 	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
@@ -148,6 +148,13 @@ public class Users {
 		}
 
 		return false;
+	}
+
+	@Transient
+	public String getPhotoImagePath() {
+		if (id == null || photos == null)
+			return "/images/default-image.png";
+		return "/user-photos/" + this.id + "/" + this.photos;
 	}
 
 }
