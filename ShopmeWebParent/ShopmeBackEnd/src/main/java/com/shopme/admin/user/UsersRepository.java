@@ -1,5 +1,8 @@
 package com.shopme.admin.user;
 
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -19,4 +22,7 @@ public interface UsersRepository extends CrudRepository<Users, Integer>,  Paging
 	@Query("UPDATE Users u SET u.enabled = ?2 WHERE u.id = ?1")
 	@Modifying
 	public void updateEnableStatus(Integer id, boolean ennabled);
+	
+	@Query("SELECT u FROM Users u WHERE CONCAT(u.id, ' ', u.email, ' ', u.firstName, ' ',"+"u.lastName ) LIKE %?1%")
+	public Page<Users> finAll (String keyword, Pageable pageable);
 }

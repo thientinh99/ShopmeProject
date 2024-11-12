@@ -1,4 +1,4 @@
-package com.shopme.admin.user;
+package com.shopme.admin.user.controller;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -20,10 +21,16 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.shopme.admin.FileUploadUtil;
+import com.shopme.admin.user.UserService;
+import com.shopme.admin.user.exporter.UserCsvExporter;
+import com.shopme.admin.user.exporter.UserExcelExporter;
+import com.shopme.admin.user.exporter.UserPdfExporter;
 import com.shopme.common.constans.MessageContants;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.Users;
 import com.shopme.common.exception.UserNotFoundException;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping(path = "/users")
@@ -39,22 +46,28 @@ public class UsersController {
 
 		// model.addAttribute("lstUsers", lstUsers);
 
-		return listBypage(1, model);
+		return listBypage(1, model, "firstName", "asc", null);
 	}
 
 	@GetMapping("/pages/{pageNum}")
-	public String listBypage(@PathVariable(name = "pageNum") int pageNum, Model model) {
-		Page<Users> page = uService.listByPage(pageNum);
+	public String listBypage(@PathVariable(name = "pageNum") int pageNum, Model model,
+			@Param("sortField") String sortField, @Param("sortDir") String sortDir, @Param("keyword") String keyword) {
+		Page<Users> page = uService.listByPage(pageNum, sortField, sortDir, keyword);
 		List<Users> lstUsers = page.getContent();
 		long startCount = (pageNum - 1) * UserService.USERS_PER_PAGE + 1;
 		long endCount = startCount + UserService.USERS_PER_PAGE - 1;
 		endCount = endCount > page.getTotalElements() ? page.getTotalElements() : endCount;
+		String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
 		model.addAttribute("totalPages", page.getTotalPages());
 		model.addAttribute("currentPage", pageNum);
 		model.addAttribute("startCount", startCount);
 		model.addAttribute("endCount", endCount);
 		model.addAttribute("totalItems", page.getTotalElements());
 		model.addAttribute("lstUsers", lstUsers);
+		model.addAttribute("sortField", sortField);
+		model.addAttribute("sortDir", sortDir);
+		model.addAttribute("reverseSortDir", reverseSortDir);
+		model.addAttribute("keyword", keyword);
 		return "users";
 	}
 
@@ -128,5 +141,28 @@ public class UsersController {
 			redirectAttributes.addFlashAttribute("message", ex.getMessage());
 		}
 		return "redirect:/users";
+	}
+	
+	@GetMapping("/export/csv")
+	public void exportToCSV(HttpServletResponse response) throws IOException {
+		List<Users> lstUsers = uService.listAllUser();
+		UserCsvExporter exporter = new UserCsvExporter();
+		exporter.export(lstUsers, response);
+	}
+	
+	@GetMapping("/export/excel")
+	public void exportToExcel(HttpServletResponse response) throws IOException {
+		List<Users> listUsers = uService.listAllUser();
+		
+		UserExcelExporter exporter = new UserExcelExporter();
+		exporter.export(listUsers, response);
+	}
+	
+	@GetMapping("/export/pdf")
+	public void exportToPDF(HttpServletResponse response) throws IOException {
+		List<Users> listUsers = uService.listAllUser();
+		
+		UserPdfExporter exporter = new UserPdfExporter();
+		exporter.export(listUsers, response);
 	}
 }

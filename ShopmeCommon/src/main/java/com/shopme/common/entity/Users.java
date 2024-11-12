@@ -49,6 +49,14 @@ public class Users {
 	public Users() {
 
 	}
+	
+	public Users(Integer id,String email, String firstName, String lastName, String photos) {
+		this.id = id;
+		this.email = email;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.photos = photos;
+	}
 
 	public Users(String email, String firstName, String lastName, String photos) {
 		super();

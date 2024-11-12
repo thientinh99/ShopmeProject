@@ -78,7 +78,7 @@ public class WebSecurityConfig {
 	
 	@Bean
 	WebSecurityCustomizer configure() throws Exception {
-		return (web) -> web.ignoring().requestMatchers("/images/**", "/js/**", "/webjars/**");
+        return (web) -> web.ignoring().requestMatchers("/images/**", "/js/**", "/webjars/**","/fontawesome/**", "/webfonts/**", "/style.css");
 	}
 
 }
